@@ -105,10 +105,6 @@ impl Diagram {
     pub fn add_relationship(&mut self, relation: Relationship) {
         self.relationships.push(relation);
     }
-
-    pub fn render(&self) -> String {
-        self.to_string()
-    }
 }
 
 impl Display for Diagram {
