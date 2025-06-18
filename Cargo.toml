@@ -1,7 +1,8 @@
 [package]
-name = "rustviz"
+name = "rust-c4-gen"
 version = "0.1.0"
 edition = "2024"
+repository = "https://github.com/pold-io/rust-c4-gen"
 
 [dependencies]
 anyhow = "1.0.98"
