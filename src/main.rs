@@ -43,10 +43,6 @@ fn build_diagram(crate_info: &rustdoc_types::Crate) -> Diagram {
 
             let item = &crate_info.index[id];
 
-            if item.visibility != Visibility::Public {
-                continue;
-            }
-
             let ItemEnum::Module(module) = &item.inner else {
                 continue;
             };
