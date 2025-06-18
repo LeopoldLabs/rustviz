@@ -112,7 +112,7 @@ impl Display for Diagram {
         //! Renders a diagram in the MermaidJS C4 Syntax. \
         //! See <https://mermaid.js.org/syntax/c4.html> for more info.
 
-        writeln!(f, "C4Context \n")?;
+        writeln!(f, "C4Context")?;
         writeln!(f, "\ttitle {}", self.title)?;
 
         for element in self.elements.values() {
