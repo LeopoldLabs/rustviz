@@ -45,6 +45,7 @@ impl Display for Element {
     }
 }
 
+#[derive(Clone)]
 pub enum RelationshipKind {
     BiRel,
     Rel,
@@ -62,6 +63,7 @@ impl Display for RelationshipKind {
     }
 }
 
+#[derive(Clone)]
 pub struct Relationship {
     pub kind: RelationshipKind,
     pub from: Id,
@@ -104,6 +106,15 @@ impl Diagram {
 
     pub fn add_relationship(&mut self, relation: Relationship) {
         self.relationships.push(relation);
+    }
+
+    pub fn clean(&mut self) {
+        self.relationships = self
+            .relationships
+            .iter()
+            .cloned()
+            .filter(|r| self.elements.contains_key(&r.from) && self.elements.contains_key(&r.to))
+            .collect()
     }
 }
 

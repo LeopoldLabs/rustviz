@@ -23,21 +23,26 @@ fn main() -> Result<()> {
         "json version matches our rustdoc_types version"
     );
 
-    let diagram = build_diagram(&crate_info);
+    let mut diagram = build_diagram(&crate_info, args.max_depth);
+
+    diagram.clean();
 
     println!("{diagram}");
 
     Ok(())
 }
 
-fn build_diagram(crate_info: &rustdoc_types::Crate) -> Diagram {
+fn build_diagram(crate_info: &rustdoc_types::Crate, max_depth: Option<u32>) -> Diagram {
+    let mut depth = 0;
+
     let mut diagram = Diagram::new("Crate Overview".into());
 
     let mut visited = HashSet::new();
     let mut queue = HashSet::from([crate_info.root]);
 
-    while !queue.is_empty() {
+    while !queue.is_empty() && max_depth.is_none_or(|m| depth < m) {
         let mut upcoming = HashSet::new();
+
         for id in queue.iter() {
             visited.insert(*id);
 
@@ -73,6 +78,8 @@ fn build_diagram(crate_info: &rustdoc_types::Crate) -> Diagram {
                 }
             }
         }
+
+        depth += 1;
 
         queue = upcoming;
     }
