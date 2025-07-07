@@ -1,11 +1,15 @@
+#![feature(exit_status_error)]
+
 use std::collections::HashSet;
 
-use anyhow::{Result, ensure};
+use anyhow::Result;
 use clap::Parser;
 
 mod args;
 use args::Args;
-use rustdoc_types::{ItemEnum, Visibility};
+use rustdoc_types::ItemEnum;
+
+mod rustdoc;
 
 use crate::c4::{Diagram, Element, Relationship};
 
@@ -14,20 +18,7 @@ mod c4;
 fn main() -> Result<()> {
     let args = Args::try_parse()?;
 
-    let file = std::fs::read_to_string(args.filepath)?;
-
-    let crate_info: rustdoc_types::Crate = serde_json::from_str(&file)?;
-
-    ensure!(
-        crate_info.format_version == rustdoc_types::FORMAT_VERSION,
-        "json version matches our rustdoc_types version"
-    );
-
-    let mut diagram = build_diagram(&crate_info, args.max_depth);
-
-    diagram.clean();
-
-    println!("{diagram}");
+    let crates = rustdoc::docs(&args.project_path);
 
     Ok(())
 }
