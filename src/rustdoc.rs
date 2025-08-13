@@ -1,5 +1,6 @@
 use anyhow::ensure;
 use std::{
+    collections::HashMap,
     path::{Path, PathBuf},
     process::Command,
 };
@@ -29,13 +30,13 @@ fn generate_docs(path: &Path) -> anyhow::Result<()> {
     Ok(())
 }
 
-fn read_docs(path: &Path) -> anyhow::Result<Vec<rustdoc_types::Crate>> {
+fn read_docs(path: &Path) -> anyhow::Result<HashMap<String, rustdoc_types::Crate>> {
     //! Reads rustdoc descriptions from the target folder of a given directory.
 
     let dir_path = target_folder(path);
     let dir = std::fs::read_dir(&dir_path)?;
 
-    let mut crates = Vec::new();
+    let mut crates = HashMap::new();
 
     for entry in dir {
         let entry = entry?;
@@ -50,13 +51,21 @@ fn read_docs(path: &Path) -> anyhow::Result<Vec<rustdoc_types::Crate>> {
             crate_info.format_version == rustdoc_types::FORMAT_VERSION,
             "json version matches our rustdoc_types version"
         );
-        crates.push(crate_info);
+
+        let crate_name = entry
+            .file_name()
+            .into_string()
+            .map_err(|_| anyhow::anyhow!("couldn't convert filename to UTF-8 string"))?;
+
+        let crate_name = crate_name.strip_suffix(".json").unwrap().to_string();
+
+        crates.insert(crate_name, crate_info);
     }
 
     Ok(crates)
 }
 
-pub fn docs(path: &Path) -> anyhow::Result<Vec<rustdoc_types::Crate>> {
+pub fn docs(path: &Path) -> anyhow::Result<HashMap<String, rustdoc_types::Crate>> {
     generate_docs(path)?;
     read_docs(path)
 }
