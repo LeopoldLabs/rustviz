@@ -6,6 +6,7 @@ repository = "https://github.com/pold-io/rust-c4-gen"
 
 [dependencies]
 anyhow = "1.0.98"
+cargo_toml = "0.22.3"
 clap = { version = "4.5.40", features = ["derive"] }
 rustdoc-types = { version = "0.46.1", features = ["rustc-hash"] }
 serde = "1.0.219"

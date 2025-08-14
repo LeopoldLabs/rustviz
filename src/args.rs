@@ -1,25 +1,34 @@
 //! cli args + parser
 
-use clap::{Parser, Subcommand};
+use clap::{Parser, ValueEnum};
 use std::path::PathBuf;
 
 #[derive(Parser)]
 #[command(version, about, long_about=None)]
-pub(crate) struct Args {
-    #[arg(short, long)]
+pub struct Args {
+    
+    #[arg(default_value = ".")]
     pub project_path: PathBuf,
 
-    pub max_depth: Option<u32>,
+    #[arg(short, long, default_value = "-")]
+    pub output_path: PathBuf,
 
-    #[command(subcommand)]
-    pub level: Level,
+    #[arg(short = 'f', long, default_value = "graphviz")]
+    pub output_format: OutputFormat,
+
+    #[arg(short, long, default_value = "auto")]
+    pub detect_workspace: DetectWorkspace,
 }
 
-#[derive(Subcommand)]
-pub enum Level {
-    Crate,
-    Module {
-        #[arg(long)]
-        crate_name: String,
-    },
+#[derive(ValueEnum, Clone)]
+pub enum OutputFormat {
+    C4,
+    Graphviz,
+}
+
+#[derive(ValueEnum, Clone)]
+pub enum DetectWorkspace {
+    Yes,
+    No,
+    Auto
 }
