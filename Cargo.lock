@@ -185,18 +185,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "rust-c4-gen"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "cargo_toml",
- "clap",
- "rustdoc-types",
- "serde",
- "serde_json",
-]
-
-[[package]]
 name = "rustc-hash"
 version = "2.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -211,6 +199,18 @@ dependencies = [
  "rustc-hash",
  "serde",
  "serde_derive",
+]
+
+[[package]]
+name = "rustviz"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "cargo_toml",
+ "clap",
+ "rustdoc-types",
+ "serde",
+ "serde_json",
 ]
 
 [[package]]
