@@ -4,6 +4,9 @@ on:
     tags:
       - 'v*'
 
+env:
+  CARGO_TERM_COLOR: always
+
 jobs:
   build-and-release:
     strategy:
@@ -20,7 +23,7 @@ jobs:
     
     - name: Setup Rust
       run: |
-        curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+        curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain nightly
         echo "$HOME/.cargo/bin" >> $GITHUB_PATH
     
     - name: Add target
