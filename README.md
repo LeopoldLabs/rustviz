@@ -68,7 +68,7 @@ If you have any feedback, please reach out to me at rustviz@leoj.de
 
 ## FAQ
 
-#### Who is this for?
+#### Who/What is this for?
 
 My seminar paper.
 
