@@ -22,7 +22,10 @@ fn main() -> Result<()> {
     let manifest_path = args.project_path.join("Cargo.toml");
     let manifest = Manifest::from_path(&manifest_path)?;
 
-    let mut diagram = Diagram::new("Diagram".to_string(), args.filter);
+    let mut diagram = Diagram::new(
+        "Diagram".to_string(),
+        args.filter.unwrap_or_else(|| "".to_string()),
+    );
 
     match args.detect_workspace {
         DetectWorkspace::Yes => {

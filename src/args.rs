@@ -19,7 +19,7 @@ pub struct Args {
     pub detect_workspace: DetectWorkspace,
 
     #[arg(long)]
-    pub filter: String,
+    pub filter: Option<String>,
 }
 
 #[derive(ValueEnum, Clone)]
@@ -33,8 +33,4 @@ pub enum DetectWorkspace {
     Yes,
     No,
     Auto,
-}
-
-pub fn parse_filter(filter: String) -> Vec<String> {
-    filter.split(',').map(|s| s.to_string()).collect()
 }
