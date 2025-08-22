@@ -59,19 +59,25 @@ pub struct Diagram {
     title: String,
     elements: BTreeMap<Id, Element>,
     relationships: HashMap<Id, Vec<Id>>,
+    filter: HashSet<String>,
 }
 
 impl Diagram {
-    pub fn new(title: String) -> Self {
+    pub fn new(title: String, filter_str: String) -> Self {
         Self {
             title,
             elements: BTreeMap::new(),
             relationships: HashMap::new(),
+            filter: filter_str.split(',').map(|s| s.to_string()).collect(),
         }
     }
 
     pub fn add_element(&mut self, element: Element) {
         self.elements.insert(element.id.clone(), element);
+    }
+
+    pub fn has_element(&self, id: &Id) -> bool {
+        self.elements.contains_key(id)
     }
 
     pub fn add_relationship(&mut self, from: Id, to: Id) {
@@ -98,6 +104,9 @@ impl Diagram {
         writeln!(output, "\ttitle {}", self.title)?;
 
         for element in self.elements.values() {
+            if self.filter.contains(&element.id) {
+                continue;
+            }
             writeln!(
                 output,
                 "\t{kind}({id}, \"{title}\", \"{description}\")",
@@ -109,12 +118,17 @@ impl Diagram {
         }
 
         for (from, tos) in self.relationships.iter() {
+            if self.filter.contains(from) {
+                continue;
+            }
             for to in tos {
-                writeln!(
-                    output,
-                    "\t{kind}({from}, {to}, \"depends\")",
-                    kind = RelationshipKind::Rel,
-                )?;
+                if !self.filter.contains(to) {
+                    writeln!(
+                        output,
+                        "\t{kind}({from}, {to}, \"depends\")",
+                        kind = RelationshipKind::Rel,
+                    )?;
+                }
             }
         }
 
@@ -132,8 +146,13 @@ impl Diagram {
         writeln!(output, "digraph {title} {{", title = self.title)?;
 
         for (from, tos) in self.relationships.iter() {
+            if self.filter.contains(from) {
+                continue;
+            }
             for to in tos {
-                writeln!(output, "  \"{from}\" -> \"{to}\"")?;
+                if !self.filter.contains(to) {
+                    writeln!(output, "  \"{from}\" -> \"{to}\"")?;
+                }
             }
         }
 

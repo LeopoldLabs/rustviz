@@ -6,7 +6,6 @@ use std::path::PathBuf;
 #[derive(Parser)]
 #[command(version, about, long_about=None)]
 pub struct Args {
-    
     #[arg(default_value = ".")]
     pub project_path: PathBuf,
 
@@ -18,6 +17,9 @@ pub struct Args {
 
     #[arg(short, long, default_value = "auto")]
     pub detect_workspace: DetectWorkspace,
+
+    #[arg(long)]
+    pub filter: String,
 }
 
 #[derive(ValueEnum, Clone)]
@@ -30,5 +32,9 @@ pub enum OutputFormat {
 pub enum DetectWorkspace {
     Yes,
     No,
-    Auto
+    Auto,
+}
+
+pub fn parse_filter(filter: String) -> Vec<String> {
+    filter.split(',').map(|s| s.to_string()).collect()
 }

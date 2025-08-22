@@ -22,8 +22,8 @@ fn main() -> Result<()> {
     let manifest_path = args.project_path.join("Cargo.toml");
     let manifest = Manifest::from_path(&manifest_path)?;
 
-    let mut diagram = Diagram::new("Diagram".to_string());
-    
+    let mut diagram = Diagram::new("Diagram".to_string(), args.filter);
+
     match args.detect_workspace {
         DetectWorkspace::Yes => {
             let Some(workspace) = manifest.workspace else {
@@ -33,19 +33,19 @@ fn main() -> Result<()> {
             workspace::parse_workspace(&mut diagram, &args.project_path, &workspace)?;
         }
         DetectWorkspace::No => {
-            let Some(package) = manifest.package else {
+            if !manifest.package.is_some() {
                 bail!("No package found");
-            };
-            package::parse_package(&mut diagram, &package)?;
+            }
+            package::parse_package(&mut diagram, &args.project_path, &manifest)?;
         }
         DetectWorkspace::Auto => {
             if let Some(workspace) = manifest.workspace {
                 workspace::parse_workspace(&mut diagram, &args.project_path, &workspace)?;
             } else {
-                let Some(package) = manifest.package else {
+                if !manifest.package.is_some() {
                     bail!("No package found");
-                };
-                package::parse_package(&mut diagram, &package)?;
+                }
+                package::parse_package(&mut diagram, &args.project_path, &manifest)?;
             };
         }
     }
